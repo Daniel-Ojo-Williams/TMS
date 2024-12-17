@@ -1,0 +1,19 @@
+services:
+  postgres_db:
+    image: postgres:latest
+    container_name: tms_postgres_db
+    restart: always
+    ports:
+      - '5678:5678'
+    environment:
+      PGPORT: 5678
+      POSTGRES_USER: tms
+      POSTGRES_PASSWORD: tmspassword
+      POSTGRES_HOST: localhost
+      POSTGRES_DB: tms_postgres_db
+    volumes:
+      - tms_db_data:/var/lib/postgresql/data
+
+volumes:
+  tms_db_data: {}
+      
