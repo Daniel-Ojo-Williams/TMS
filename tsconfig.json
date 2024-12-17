@@ -16,6 +16,6 @@
       "es6",
       "dom"
     ],
-    "sourceMap": true
+    "sourceMap": true,
   }
 }
