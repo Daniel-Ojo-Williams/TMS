@@ -4,16 +4,22 @@ import helmet from 'helmet';
 import cors from 'cors';
 import { HttpStatus } from './utils/statusCodes';
 import { globalErrorHandler } from './utils/globalErrorHAndler';
+import connectDB from './db/connection';
+import UserRouter from './users/users.routes';
 
 const app = express();
 
+app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(helmet())
 app.use(cors())
 
+app.use(UserRouter);
 
 const PORT = process.env.PORT || 3000;
+
+connectDB();
 
 app.get('/', (_: Request, res: Response) => {
     res.status(HttpStatus.OK).json({ error: false, message: 'Welcome to TMS...', data: { service: 'task-management-system', version: '1.0' } });
