@@ -19,6 +19,6 @@ export const globalErrorHandler = (err: unknown, req: Request, res: Response, ne
      message = err.issues.map((err) => `${err.path.pop()}: ${err.message}`).join(', ');
       status = HttpStatus.UNPROCESSABLE_ENTITY;
   }
-  console.log(err)
+
   res.status(status).json({ error: true, message, data: data ?? null });
 }
