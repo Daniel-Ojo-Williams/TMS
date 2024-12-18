@@ -5,10 +5,13 @@ Upon aplication startup:
 - Three default roles are created: **User**, **Admin**, and **Manager.**
 - A default **Admin** account is created using credentials specified in the `.env` file (email, name and password).
 
-Upcoming Features (for Admin)
-- [x] Create new roles
-- [ ] Attach permissions to roles
-- [x] Assign roles to users
+Upcoming Features
+- [x] Create new roles (Admin)
+- [ ] Attach permissions to roles (Admin)
+- [x] Assign roles to users (Admin)
+- [ ] Password reset
+- [ ] MFA.
+- [ ] Email notifications.
 
 ## Documentation
 [POSTMAN Collection Documentation](https://documenter.getpostman.com/view/30328806/2sAYJ1kN8K)
