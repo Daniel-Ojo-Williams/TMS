@@ -1,7 +1,12 @@
-import { Column, CreatedAt, DataType, DeletedAt, Index, Model, Scopes, Table, UpdatedAt } from "sequelize-typescript";
+import { BelongsTo, Column, CreatedAt, DataType, DeletedAt, Index, Model, Scopes, Table, UpdatedAt } from "sequelize-typescript";
 import type { RegisterUserInput } from "../dto/user-auth.dto";
+import { Roles } from "../../types/roles";
 
-export interface UserModel extends RegisterUserInput {
+interface UserModelAttributes extends RegisterUserInput {
+  role: Roles
+}
+
+export interface UserModel extends UserModelAttributes {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -24,7 +29,7 @@ export interface UserModel extends RegisterUserInput {
   deletedAt: 'deletedAt',
   paranoid: true
 })
-export default class User extends Model<UserModel, RegisterUserInput> {
+export default class User extends Model<UserModel, UserModelAttributes> {
   @Column({ primaryKey: true, type: DataType.UUID, defaultValue: DataType.UUIDV4 })
   id!: string;
 
@@ -44,6 +49,13 @@ export default class User extends Model<UserModel, RegisterUserInput> {
     allowNull: false
   })
   password!: string;
+
+  @Column({
+    type: DataType.ENUM,
+    values: Object.values(Roles),
+    allowNull: false
+  })
+  role!: Roles;
 
   @Column({
     allowNull: true,
