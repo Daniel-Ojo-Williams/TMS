@@ -6,9 +6,9 @@ Upon aplication startup:
 - A default **Admin** account is created using credentials specified in the `.env` file (email, name and password).
 
 Upcoming Features (for Admin)
-- [] Create new roles
-- [] Attach permissions to roles
-- [] Assign roles to users
+- [ ] Create new roles
+- [ ] Attach permissions to roles
+- [ ] Assign roles to users
 
 ## Documentation
 [POSTMAN Collection Documentation](https://documenter.getpostman.com/view/30328806/2sAYJ1kN8K)
