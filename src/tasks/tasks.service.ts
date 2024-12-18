@@ -1,4 +1,4 @@
-import { Op, WhereOptions } from "sequelize";
+import { Op, Order, WhereOptions } from "sequelize";
 import User from "../users/model/user.model";
 import { CustomError } from "../utils/customError";
 import { getPaginationData } from "../utils/pagination";
@@ -24,13 +24,27 @@ class TaskService {
     return task;
   }
 
-  async getAllUserTasks(userId: string, pagination: PaginationQuery): Promise<AllTasks> {
-    const { size, page, status } = pagination;  
+  async getAllUserTasks(userId: string, query: PaginationQuery): Promise<AllTasks> {
+    const { size, page, status, endDate, startDate } = query;  
+    let { sortBy, order } = query;
+    sortBy = sortBy === 'dueDate' ? 'dueDate' : 'createdAt';
+    order = order === 'ASC' ? 'ASC' : 'DESC'
+
     // --| Number of items on each page
     const limit = size || 3;
     // --| Number of items to skip
     const offset = page ? limit * (page - 1) : 0;
-    const result = await Tasks.findAndCountAll({ where: { userId, status }, limit, offset });
+    const where: WhereOptions<TaskModel> = { userId };
+    if (status) {
+      where.status = status;
+    }
+    if (startDate && endDate) {
+      where.dueDate = {
+        [Op.between]: [startDate, endDate]
+      }
+    }
+
+    const result = await Tasks.findAndCountAll({ where, limit, offset, order: [ [sortBy, order] ] });
     const { currentPage, items: tasks, totalItems: totalTasks, totalPages } = getPaginationData({ count: result.count, items: result.rows }, limit, page)
     return { currentPage, tasks, totalPages, totalTasks }
   }
@@ -50,7 +64,10 @@ class TaskService {
   }
 
   async getAllTasks(query: PaginationQuery): Promise<AllTasks> {
-    const { page, size, status, deleted } = query;
+    const { page, size, status, deleted, startDate, endDate } = query;
+    let { sortBy, order } = query;
+    sortBy = sortBy === 'dueDate' ? 'dueDate' : 'createdAt';
+    order = order === 'ASC' ? 'ASC' : 'DESC'
     const limit = size || 0;
     const offset = page ? limit * (page - 1) : 0;
     const where: WhereOptions<TaskModel> = {};
@@ -62,7 +79,12 @@ class TaskService {
         [Op.not]: null as any
       }
     }
-    const result = await Tasks.findAndCountAll({ where, limit, offset, paranoid: deleted === 'true' ? false : true, include: [{ model: User, attributes: ['name', 'email', 'role'] }] });
+    if (startDate && endDate) {
+      where.dueDate = {
+        [Op.between]: [startDate, endDate]
+      }
+    }
+    const result = await Tasks.findAndCountAll({ where, limit, offset, paranoid: deleted === 'true' ? false : true, include: [{ model: User, attributes: ['name', 'email', 'role'] }], order: [[sortBy, order]] });
     const { currentPage, items: tasks, totalItems: totalTasks, totalPages } = getPaginationData({ count: result.count, items: result.rows }, limit, page)
     return { currentPage, tasks, totalPages, totalTasks }
   }

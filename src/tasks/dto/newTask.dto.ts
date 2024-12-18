@@ -32,7 +32,11 @@ export const Pagination = z.object({
       }
     }).optional(),
     status: z.enum(['pending', 'completed', 'in-progress']).optional(),
-    deleted: z.enum(['true', 'false']).optional()
+    deleted: z.enum(['true', 'false']).optional(),
+    sortBy: z.enum(['dueDate', 'createdAt']).optional(),
+    order: z.enum(['ASC', 'DESC']).optional(),
+    startDate: z.string().date().optional(),
+    endDate: z.string().date().optional()
   })
 })
 
