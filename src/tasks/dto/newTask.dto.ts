@@ -31,7 +31,8 @@ export const Pagination = z.object({
         })
       }
     }).optional(),
-    status: z.enum(['pending', 'completed', 'in-progress']).optional()
+    status: z.enum(['pending', 'completed', 'in-progress']).optional(),
+    deleted: z.enum(['true', 'false']).optional()
   })
 })
 

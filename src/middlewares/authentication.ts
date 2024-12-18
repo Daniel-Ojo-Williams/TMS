@@ -3,7 +3,7 @@ import { CustomError } from "../utils/customError";
 import { HttpStatus } from "../utils/statusCodes";
 import * as jwt from 'jsonwebtoken';
 import 'dotenv/config';
-import { AuthPayload } from "../types/auth";
+import { AuthPayload } from "../shared/types/auth";
 
 export const EnsureAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;

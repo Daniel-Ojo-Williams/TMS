@@ -4,8 +4,8 @@ import * as bcrypt from 'bcrypt';
 import { CustomError } from '../utils/customError';
 import { HttpStatus } from '../utils/statusCodes';
 import * as jwt from 'jsonwebtoken';
-import { AuthPayload } from '../types/auth';
-import { Roles } from '../types/roles';
+import { AuthPayload } from '../shared/types/auth';
+import { Roles } from '../shared/types/roles';
 
 class UserService {
   async registerUser (userDetails: RegisterUserInput): Promise<UserModel> {

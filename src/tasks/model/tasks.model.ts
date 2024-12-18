@@ -7,6 +7,7 @@ export interface TaskModel extends TaskInput {
   createdAt: Date;
   userId: string;
   updatedAt: Date;
+  deletedAt?: Date;
 };
 
 export enum TaskStatus {

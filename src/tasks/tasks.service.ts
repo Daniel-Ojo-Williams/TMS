@@ -1,4 +1,4 @@
-import { WhereOptions } from "sequelize";
+import { Op, WhereOptions } from "sequelize";
 import User from "../users/model/user.model";
 import { CustomError } from "../utils/customError";
 import { getPaginationData } from "../utils/pagination";
@@ -50,14 +50,19 @@ class TaskService {
   }
 
   async getAllTasks(query: PaginationQuery): Promise<AllTasks> {
-    const { page, size, status } = query;
+    const { page, size, status, deleted } = query;
     const limit = size || 0;
     const offset = page ? limit * (page - 1) : 0;
     const where: WhereOptions<TaskModel> = {};
     if (status) {
       where.status = status;
     }
-    const result = await Tasks.findAndCountAll({ where, limit, offset, include: [{ model: User, attributes: ['name', 'email', 'role'] }] });
+    if (deleted) {
+      where.deletedAt = {
+        [Op.not]: null as any
+      }
+    }
+    const result = await Tasks.findAndCountAll({ where, limit, offset, paranoid: deleted === 'true' ? false : true, include: [{ model: User, attributes: ['name', 'email', 'role'] }] });
     const { currentPage, items: tasks, totalItems: totalTasks, totalPages } = getPaginationData({ count: result.count, items: result.rows }, limit, page)
     return { currentPage, tasks, totalPages, totalTasks }
   }

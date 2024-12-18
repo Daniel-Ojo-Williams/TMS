@@ -1,6 +1,6 @@
 import { BelongsTo, Column, CreatedAt, DataType, DeletedAt, Index, Model, Scopes, Table, UpdatedAt } from "sequelize-typescript";
 import type { RegisterUserInput } from "../dto/user-auth.dto";
-import { Roles } from "../../types/roles";
+import { Roles } from "../../shared/types/roles";
 
 interface UserModelAttributes extends RegisterUserInput {
   role: Roles
