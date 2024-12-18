@@ -19,7 +19,7 @@ class TasksController {
   async getTask(req: Request<GetTaskParam, {}, TaskInput>, res: Response, next: NextFunction) {
     try {
       const { taskId } = req.params;
-      const data = await TasksService.getATask(taskId);
+      const data = await TasksService.getATask(taskId, req.user);
       res.status(HttpStatus.OK).json({ error: false, message: 'Task fetched successfully', data });
     } catch (error) {
       next(error);
@@ -58,7 +58,7 @@ class TasksController {
   async updateTask(req: Request<UpdateTaskParam, {}, UpdateTaskInput>, res: Response, next: NextFunction) {
     try {
       const { taskId } = req.params;
-      const data = await TasksService.updateTask(taskId, req.body);
+      const data = await TasksService.updateTask(taskId, req.body, req.user);
       res.status(HttpStatus.OK).json({ error: false, message: 'Task updated successfully', data });
     } catch (error) {
       next(error);
@@ -68,7 +68,7 @@ class TasksController {
   async deleteTask(req: Request<GetTaskParam, {}, {}>, res: Response, next: NextFunction) {
     try {
       const { taskId } = req.params;
-      await TasksService.deleteTask(taskId);
+      await TasksService.deleteTask(taskId, req.user);
       res.status(HttpStatus.OK).json({ error: false, message: 'Task deleted successfully' });
     } catch (error) {
       next(error);

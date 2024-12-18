@@ -5,7 +5,7 @@ import * as jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { AuthPayload } from "../shared/types/auth";
 
-export const EnsureAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+export const ensureAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) throw new CustomError(HttpStatus.UNAUTHORISED, 'You are not authenticated. Please login to continue');

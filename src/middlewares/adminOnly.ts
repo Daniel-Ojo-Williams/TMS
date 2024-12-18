@@ -3,7 +3,7 @@ import { Roles } from "../shared/types/roles";
 import { HttpStatus } from "../utils/statusCodes";
 import { CustomError } from "../utils/customError";
 
-export const AdminOnly = (req: Request, res: Response, next: NextFunction) => {
+export const adminOnly = (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.user;
     if (user.role !== Roles.ADMIN) {

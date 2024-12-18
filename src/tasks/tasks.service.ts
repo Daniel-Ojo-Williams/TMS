@@ -7,6 +7,9 @@ import { PaginationQuery, TaskInput } from "./dto/newTask.dto";
 import { UpdateTaskInput } from "./dto/updateTask,dto";
 import { AllTasks } from "./interfaces";
 import Tasks, { TaskModel } from "./model/tasks.model";
+import { checkPermission, hasPermission } from "../middlewares/hasPermissions";
+import { Permissions } from "../utils/seedRoles&Permissions";
+import { AuthPayload } from "../shared/types/auth";
 
 class TaskService {
   async createTask(newTask: TaskInput, userId: string): Promise<Tasks> {
@@ -16,11 +19,11 @@ class TaskService {
     return task.save();
   }
 
-  async getATask(taskId: string): Promise<Tasks> {
-    const task = await Tasks.findOne({ where: { id: taskId }, include: [{ model: User, attributes: ['name', 'email'] }] });
+  async getATask(taskId: string, user: AuthPayload): Promise<Tasks> {
+    const task = await Tasks.findOne({ where: { id: taskId }, include: [{ model: User, attributes: ['name', 'email', 'id'] }] });
 
     if (!task) throw new CustomError(HttpStatus.NOT_FOUND, 'Task not found');
-
+    checkPermission(Permissions.VIEW_TASK, user, task);
     return task;
   }
 
@@ -49,8 +52,9 @@ class TaskService {
     return { currentPage, tasks, totalPages, totalTasks }
   }
 
-  async updateTask(taskId: string, taskDetails: UpdateTaskInput): Promise<Tasks> {
+  async updateTask(taskId: string, taskDetails: UpdateTaskInput, user: AuthPayload): Promise<Tasks> {
     const { description, dueDate, status, title } = taskDetails;
+    await this.getATask(taskId, user);
     const result = await Tasks.update({ description, dueDate, status, title }, { where: { id: taskId }, returning: true });
 
     const affectedRows = result[0];
@@ -89,7 +93,8 @@ class TaskService {
     return { currentPage, tasks, totalPages, totalTasks }
   }
 
-  async deleteTask(taskId: string) {
+  async deleteTask(taskId: string, user: AuthPayload) {
+    await this.getATask(taskId, user);
     const result = await Tasks.destroy({ where: { id: taskId } });
 
     if (result === 0) {
