@@ -37,7 +37,7 @@ app.use(globalErrorHandler);
 
 async function initializeApp() {
   try {
-    await connectDB();
+    await connectDB().then(() => console.log('connected to db'));
     await seedRolesAndPermissions(); // --| This can be updated later using proper seeders
     await usersService.createFirstAdmin();
     app.listen(PORT, () => {

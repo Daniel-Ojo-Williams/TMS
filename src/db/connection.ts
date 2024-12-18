@@ -9,7 +9,7 @@ const sequelize = new Sequelize({
   host: process.env.DB_HOST,
   logging: false,
   port: Number(process.env.DB_PORT),
-  models: [__dirname + "/../**/*.model.ts"]
+  models: [__dirname + "/../**/*.model.{js,ts}"]
 });
 
 const connectDB = () => sequelize.authenticate().then(() => sequelize.sync({

@@ -7,12 +7,29 @@ services:
       - '5678:5678'
     environment:
       PGPORT: 5678
-      POSTGRES_USER: tms
-      POSTGRES_PASSWORD: tmspassword
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_HOST: localhost
-      POSTGRES_DB: tms_postgres_db
+      POSTGRES_DB: ${DB_NAME}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
+      interval: 10s
+      retries: 5
     volumes:
       - tms_db_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: tms_app
+    environment:
+      - DB_HOST=postgres_db
+    env_file:
+      - path: .env
+        required: true
+    ports:
+      - '${PORT}:${PORT}'
+    depends_on:
+      - postgres_db
 
 volumes:
   tms_db_data: {}
