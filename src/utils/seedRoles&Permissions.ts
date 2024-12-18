@@ -1,7 +1,6 @@
 import AppRoles from '../shared/models/roles.model';
 import Permission from '../shared/models/permissions.model';
 import RolePermission from '../shared/models/rolePermissions.model';
-import { Roles } from '../shared/types/roles';
 
 export enum Permissions {
   CREATE_TASK = 'CREATE_TASK',
@@ -13,15 +12,15 @@ export enum Permissions {
   DELETE_TASK = 'DELETE_TASK',
 }
 
-export const RolePermissions: Record<Roles, Permissions[]> = {
+export const RolePermissions: Record<string, Permissions[]> = {
   admin: Object.values(Permissions),
   user: [],
   manager: [Permissions.DELETE_TASK, Permissions.VIEW_ALL_USERS, Permissions.VIEW_USER_TASKS]
 };
 
 export const seedRolesAndPermissions = async () => {
-  for (const role of Object.values(Roles)) {
-    await AppRoles.upsert({ role });
+  for (const [key, val] of Object.entries(RolePermissions)) {
+    await AppRoles.upsert({ role: key });
   }
 
   for (const permission of Object.values(Permissions)) {

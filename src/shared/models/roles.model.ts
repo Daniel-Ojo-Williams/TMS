@@ -1,10 +1,9 @@
 import { BelongsToMany, Column, DataType, Model, Table } from "sequelize-typescript";
 import Permissions from "./permissions.model";
 import RolePermissions from "./rolePermissions.model";
-import { Roles } from "../types/roles";
 
 export interface RolesModel {
-  role: Roles,
+  role: string,
   permissions: string[];
 }
 
@@ -13,7 +12,7 @@ export interface RolesModel {
   modelName: 'AppRoles',
   timestamps: false
 })
-class AppRoles extends Model<RolesModel, { role: Roles }> {
+class AppRoles extends Model<RolesModel, { role: string }> {
   @Column({
     type: DataType.STRING,
     primaryKey: true,

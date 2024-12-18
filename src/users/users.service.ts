@@ -5,7 +5,6 @@ import { CustomError } from '../utils/customError';
 import { HttpStatus } from '../utils/statusCodes';
 import * as jwt from 'jsonwebtoken';
 import { AuthPayload } from '../shared/types/auth';
-import { Roles } from '../shared/types/roles';
 import AppRoles from '../shared/models/roles.model';
 import Permissions from '../shared/models/permissions.model';
 
@@ -15,10 +14,9 @@ class UserService {
     const userExists = await User.findOne({ where: { email } });
     if (userExists) throw new CustomError(HttpStatus.UNAUTHORISED, 'Account with email already exists');
     const passwordHash = await bcrypt.hash(password, 12);
-    const user = (await User.create({ email, password: passwordHash, name, role: Roles.USER })).toJSON();
+    const user = (await User.create({ email, password: passwordHash, name, role: 'user' })).toJSON();
     // @ts-ignore
     delete user.password;
-    console.log(user)
     return user;
   }
   
@@ -48,7 +46,7 @@ class UserService {
     }
     const firstAdminExists = await User.findOne({ where: { email: defaultAdminEmail } });
     if (!firstAdminExists) {
-      const adminRole = await AppRoles.findOne({ where: { role: Roles.ADMIN } });
+      const adminRole = await AppRoles.findOne({ where: { role: 'admin' } });
       if (!adminRole) throw new CustomError(HttpStatus.INTERNAL_SERVER_ERROR, 'Admin role not set');
       const password = await bcrypt.hash(defaultAdminPassword, 12);
 

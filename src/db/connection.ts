@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import 'dotenv/config';
 
-const sequelize = new Sequelize({
+export const sequelize = new Sequelize({
   database: process.env.DB_NAME,
   dialect: 'postgres',
   username: process.env.DB_USER,

@@ -1,5 +1,4 @@
 import type { NextFunction, Request, Response } from "express";
-import { Roles } from "../shared/types/roles";
 import { CustomError } from "../utils/customError";
 import { HttpStatus } from "../utils/statusCodes";
 import Tasks from "../tasks/model/tasks.model";
@@ -17,7 +16,7 @@ export const hasPermission = (permission: Permissions) => (req: Request, res: Re
 }
 
 export const checkPermission = (permission: Permissions, user: AuthPayload, task?: Tasks): void => {
-    if (user.role === Roles.ADMIN ) return;
+    if (user.role === 'admin' ) return;
 
     if (user.permissions.includes(permission)) return;
 

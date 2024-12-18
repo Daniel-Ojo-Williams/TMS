@@ -3,12 +3,17 @@ import AppRoles from "./roles.model";
 import Permissions from "./permissions.model";
 
 
+export interface RolePermissionAtt {
+  role: string;
+  permission: string;
+}
+
 @Table({
   tableName: 'rolePermissions',
   modelName: 'RolePermissions',
   timestamps: false
 })
-class RolePermissions extends Model {
+class RolePermissions extends Model<RolePermissionAtt> {
   @ForeignKey(() => AppRoles)
   @PrimaryKey
   @Column
