@@ -1,9 +1,10 @@
-import { BelongsTo, Column, CreatedAt, DataType, DeletedAt, Index, Model, Scopes, Table, UpdatedAt } from "sequelize-typescript";
+import { BelongsTo, Column, CreatedAt, DataType, DeletedAt, ForeignKey, Index, Model, Scopes, Table, UpdatedAt } from "sequelize-typescript";
 import type { RegisterUserInput } from "../dto/user-auth.dto";
 import { Roles } from "../../shared/types/roles";
+import AppRoles from "../../shared/models/roles.model";
 
 interface UserModelAttributes extends RegisterUserInput {
-  role: Roles
+  role: string;
 }
 
 export interface UserModel extends UserModelAttributes {
@@ -11,15 +12,18 @@ export interface UserModel extends UserModelAttributes {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+  Role: AppRoles;
 }
 
-@Scopes(() => ({
-  removePassword: {
-    attributes: {  
-      exclude: ['password']
-    }
-  }
-}))
+const formatDate = (value: Date | string) => {
+  const date = new Date(value);
+  return date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',  
+  day: 'numeric'
+});
+}
+
 @Table({
   tableName: 'users',
   modelName: 'Users',
@@ -46,12 +50,8 @@ export default class User extends Model<UserModel, UserModelAttributes> {
   })
   password!: string;
 
-  @Column({
-    type: DataType.ENUM,
-    values: Object.values(Roles),
-    allowNull: false
-  })
-  role!: Roles;
+  @BelongsTo(() => AppRoles, 'role')
+  Role!: AppRoles
 
   @Column({
     allowNull: true,
@@ -59,12 +59,39 @@ export default class User extends Model<UserModel, UserModelAttributes> {
   })
   name!: string;
   
+  @Column({
+    get() {
+      const value = this.getDataValue('createdAt');
+      if (value) {
+        return formatDate(value)
+      }
+      return value;
+    }
+  })
   @CreatedAt
   createdAt!: Date;
   
+  @Column({
+    get() {
+      const value = this.getDataValue('updatedAt');
+      if (value) {
+        return formatDate(value)
+      }
+      return value;
+    }
+  })
   @UpdatedAt
   updatedAt!: Date;
   
+  @Column({
+    get() {
+      const value = this.getDataValue('deletedAt');
+      if (value) {
+        return formatDate(value)
+      }
+      return value;
+    }
+  })
   @DeletedAt
   deletedAt?: Date;
 }

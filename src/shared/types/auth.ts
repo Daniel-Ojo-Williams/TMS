@@ -10,5 +10,6 @@ declare global {
 export interface AuthPayload {
   sub: string;
   email: string;
-  role: Roles;
+  role: string;
+  permissions: string[];
 }

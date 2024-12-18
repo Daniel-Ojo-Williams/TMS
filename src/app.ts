@@ -8,6 +8,7 @@ import connectDB from './db/connection';
 import UserRouter from './users/users.routes';
 import usersService from './users/users.service';
 import TaskRouter from './tasks/tasks.routes';
+import { seedRolesAndPermissions } from './utils/seedRoles&Permissions';
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use(globalErrorHandler);
 async function initializeApp() {
   try {
     await connectDB();
+    await seedRolesAndPermissions(); // --| This can be updated later using proper seeders
     await usersService.createFirstAdmin();
     app.listen(PORT, () => {
       console.log(`App listening on ${PORT}`)

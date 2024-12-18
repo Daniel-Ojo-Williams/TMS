@@ -1,0 +1,4 @@
+export default {
+  config: './src/db/connection.ts',
+  seeders: './src/db/seeders'
+}

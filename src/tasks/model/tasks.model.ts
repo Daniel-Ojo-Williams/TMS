@@ -23,7 +23,6 @@ const formatDate = (value: Date | string) => {
   month: 'short',  
   day: 'numeric'
 });
-
 }
 
 @Table({

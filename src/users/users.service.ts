@@ -6,6 +6,8 @@ import { HttpStatus } from '../utils/statusCodes';
 import * as jwt from 'jsonwebtoken';
 import { AuthPayload } from '../shared/types/auth';
 import { Roles } from '../shared/types/roles';
+import AppRoles from '../shared/models/roles.model';
+import Permissions from '../shared/models/permissions.model';
 
 class UserService {
   async registerUser (userDetails: RegisterUserInput): Promise<UserModel> {
@@ -22,16 +24,18 @@ class UserService {
   
   async loginUser (userDetails: LoginUserInput): Promise<{ token: string; user: UserModel }> {
     const { email, password } = userDetails;
-    const user = (await User.findOne({ where: { email } }))?.toJSON();
+    const user = (await User.findOne({ where: { email }, include: [{ model: AppRoles, nested: true, include: [{ model: Permissions }] }] }))?.toJSON();
     if (!user) throw new CustomError(HttpStatus.UNAUTHORISED, 'Invalid credentials');
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) throw new CustomError(HttpStatus.UNAUTHORISED, 'Invalid credentials');
-    // @ts-ignore
-    delete user.password;
-    const payload: AuthPayload = { sub: user.id, email: user.email, role: user.role };
+    const payload: AuthPayload = { sub: user.id, email: user.email, role: user.role, permissions: user.Role.permissions.map(perm => perm.permission) };
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new CustomError(HttpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong'); // TODO: Remove this when i validate env keys
     const token = jwt.sign(payload, secret, { expiresIn: '5h' });
+    // @ts-ignore
+    delete user.password;
+    // @ts-ignore
+    delete user.Role;
     return { token, user };
   }
 
@@ -44,9 +48,11 @@ class UserService {
     }
     const firstAdminExists = await User.findOne({ where: { email: defaultAdminEmail } });
     if (!firstAdminExists) {
+      const adminRole = await AppRoles.findOne({ where: { role: Roles.ADMIN } });
+      if (!adminRole) throw new CustomError(HttpStatus.INTERNAL_SERVER_ERROR, 'Admin role not set');
       const password = await bcrypt.hash(defaultAdminPassword, 12);
 
-      await User.create({ name: defaultAdminName, password, email: defaultAdminEmail, role: Roles.ADMIN })
+      await User.create({ name: defaultAdminName, password, email: defaultAdminEmail, role: adminRole.role })
     }
   }
 }
