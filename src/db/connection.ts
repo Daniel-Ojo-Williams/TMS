@@ -13,7 +13,7 @@ const sequelize = new Sequelize({
 });
 
 const connectDB = () => sequelize.authenticate().then(() => sequelize.sync({
-  alter: true
+  alter: true,
 }))
 
 export default connectDB;

@@ -30,13 +30,9 @@ export interface UserModel extends UserModelAttributes {
   paranoid: true
 })
 export default class User extends Model<UserModel, UserModelAttributes> {
-  @Column({ primaryKey: true, type: DataType.UUID, defaultValue: DataType.UUIDV4 })
+  @Column({ primaryKey: true, type: DataType.STRING, defaultValue: DataType.UUIDV4 })
   id!: string;
 
-  @Index({
-    name: 'idx_user_email',
-    unique: true
-  })
   @Column({
     unique: true,
     type: DataType.STRING,

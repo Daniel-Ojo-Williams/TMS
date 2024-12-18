@@ -7,6 +7,7 @@ import { globalErrorHandler } from './utils/globalErrorHAndler';
 import connectDB from './db/connection';
 import UserRouter from './users/users.routes';
 import usersService from './users/users.service';
+import TaskRouter from './tasks/tasks.routes';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(helmet())
 app.use(cors())
 
 app.use(UserRouter);
+app.use(TaskRouter);
 
 const PORT = process.env.PORT || 3000;
 

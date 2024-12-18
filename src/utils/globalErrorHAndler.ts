@@ -16,9 +16,9 @@ export const globalErrorHandler = (err: unknown, req: Request, res: Response, ne
   }
 
   if (err instanceof ZodError) {
-     message = err.issues.map((err) => `${err.path.pop()} is ${err.message}`).join(', ');
+     message = err.issues.map((err) => `${err.path.pop()}: ${err.message}`).join(', ');
       status = HttpStatus.UNPROCESSABLE_ENTITY;
   }
-
+  console.log(err)
   res.status(status).json({ error: true, message, data: data ?? null });
 }
