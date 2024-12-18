@@ -8,6 +8,7 @@ import connectDB from './db/connection';
 import UserRouter from './users/users.routes';
 import usersService from './users/users.service';
 import TaskRouter from './tasks/tasks.routes';
+import RolesRouter from './roles/roles.routes';
 import { seedRolesAndPermissions } from './utils/seedRoles&Permissions';
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(helmet())
 app.use(cors())
 
+app.use(RolesRouter);
 app.use(UserRouter);
 app.use(TaskRouter);
 
